@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Event {
+  signature    String    @id 
+  program    String    
+  name  String
+  params  String
+  slot Int 
+  synced Boolean @default(false)
+  parsed Boolean @default(false)
+}
+
+model User {
+  address  String @id
+  onChainPoints  Int @default(0)
+  offChainPoints  Int @default(0)
+  userTransactions UserTransaction[]
+  followers Int? @default(0)
+  sold Int? @default(0)
+  created Int? @default(0)
+}
+
+enum UserTransactionType {
+  ONCHAIN
+  OFFCHAIN
+}
+
+model UserTransaction {
+  id  Int @id @default(autoincrement())
+  points  Int @default(0)
+  description  String 
+  type  UserTransactionType 
+  user  User @relation(fields: [userAddress], references: [address], onDelete: Cascade)
+  userAddress String
+}
+
+
+model CandyStore {
+  address  String @id
+  owner  String?
+  collection  String?
+  name  String?
+  url  String?
+  manifestId  String?
+  numberOfItems  Int?
+  website String?
+  x String?
+  discord String?
+  instagram String?
+  youtube String?
+  telegram String?
+  description String?
+  banner String?
+  minted  Int? @default(0)
+  deleted Boolean @default(false)
+  published Boolean @default(false)
+  phases Phase[]
+}
+
+model CandyStoreComment {
+  id Int @id @default(autoincrement())
+  candyStoreAddress String
+  user String
+  data String
+}
+
+model Asset {
+  address String @id
+  collection  String
+  metadata String
+}
+
+model Phase {
+  id          String @id
+  label       String
+  candyStore  CandyStore @relation(fields: [candyStoreAddress], references: [address], onDelete: Cascade)
+  candyStoreAddress String
+  startDate   StartDate? 
+  endDate     EndDate? 
+  mintLimit   MintLimit? 
+  allocation  Allocation? 
+  solPayment  SolPayment? 
+  allowList   AllowList? 
+
+}
+
+model StartDate {
+  id        String @id
+  timestamp Int
+  phase Phase? @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  phaseId String @unique
+}
+
+model EndDate {
+  id        String @id
+  timestamp Int
+  phase Phase? @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  phaseId String @unique
+}
+
+model MintLimit {
+  id    String @id 
+  mintLimitId Int
+  limit Int
+  phase Phase? @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  phaseId String @unique
+}
+
+
+model Allocation {
+  id    String @id 
+  limit Int
+  allocationId Int
+  phase Phase? @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  phaseId String @unique
+}
+
+model SolPayment {
+  id     String @id 
+  user   String
+  amount BigInt
+  phase Phase? @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  phaseId String @unique
+}
+
+model AllowList {
+  id          String @id 
+  merkleRoot  String
+  phase Phase? @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  phaseId String @unique
+}
+
+
+model Setting {
+  address  String @id
+  admin  String
+  treasury  String
+  transactionFee  Int
+  collection  String
+}

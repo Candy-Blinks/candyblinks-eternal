@@ -1,0 +1,39 @@
+{
+  "name": "be",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sync": "tsx ./scripts/sync.ts",
+    "dev": "tsx watch ./",
+    "dev_2": "nodemon",
+    "build": "tsc",
+    "start": "tsx index.ts",
+    "prisma:format": "prisma format",
+    "prisma:migrate": "prisma migrate dev --name dev",
+    "bundle": "esbuild src/index.ts --bundle --minify --platform=node --outfile=dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@prisma/client": "^6.3.1",
+    "@types/node": "^22.13.4",
+    "@types/node-cron": "^3.0.11",
+    "dotenv": "^16.4.7",
+    "nodemon": "^3.1.9",
+    "prisma": "^6.3.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.30.1",
+    "@hono/node-server": "^1.13.8",
+    "@solana/web3.js": "^1.98.0",
+    "hono": "^4.7.2",
+    "node-cron": "^3.0.3"
+  }
+}
